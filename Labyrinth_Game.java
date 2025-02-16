@@ -7,9 +7,9 @@ This program is a fun game that I've programed.
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.lang.Thread;
 public abstract class Labyrinth_Game implements KeyListener
 {
-
 
 
     //graphics globals
@@ -55,8 +55,8 @@ public abstract class Labyrinth_Game implements KeyListener
 
     ;
     //key input globals
-    static byte keyHitCounter[] = new byte [256];
-    static boolean isKeyDown[] = new boolean [256];
+    static byte keyHitCounter[] = new byte [1024];
+    static boolean isKeyDown[] = new boolean [1024];
     //key constants
     static final short key_UpArrow = 38;
     static final short key_LeftArrow = 37;
@@ -171,12 +171,14 @@ public abstract class Labyrinth_Game implements KeyListener
 	DisplayMode OriginalDisplayMode = myGraphicsDevice.getDisplayMode ();
 	defaultGraphicsWidth = OriginalDisplayMode.getWidth ();
 	defaultGraphicsHeight = OriginalDisplayMode.getHeight ();
-	DisplayMode ModifiedDisplayMode = new DisplayMode (setGraphicsWidth, setGraphicsHeight, 0, 0);
-	//graphics
 	drawingBoard.setUndecorated (true);
 	drawingBoard.setIgnoreRepaint (true);
 	myGraphicsDevice.setFullScreenWindow (drawingBoard);
-	myGraphicsDevice.setDisplayMode (ModifiedDisplayMode);
+	System.out.print(myBufferStrategy);
+	if (myBufferStrategy == null){
+		drawingBoard.createBufferStrategy (1);
+		myBufferStrategy = drawingBoard.getBufferStrategy ();
+	}
 	frontBuffer = myBufferStrategy.getDrawGraphics ();
 	vBackBuffer = drawingBoard.createImage (graphicsWidth, graphicsHeight); //Create the back buffer
 	backBuffer = vBackBuffer.getGraphics ();
@@ -197,8 +199,14 @@ public abstract class Labyrinth_Game implements KeyListener
 
     public static void renderGraphics ()  //draws the back buffer to the front buffer
     {
-
-	frontBuffer.drawImage (vBackBuffer, 0, 0, graphicsWidth, graphicsHeight, null);
+    try
+    {
+        Thread.sleep(5);
+    }
+    catch (Exception e)
+    {
+    }
+	frontBuffer.drawImage (vBackBuffer, 0, 0, defaultGraphicsWidth, defaultGraphicsHeight, null);
     }
 
 
